@@ -1,0 +1,33 @@
+---
+
+# -----------------------------------------------------------
+# Este script requiere varias variables de entorno:
+#
+# - WLAN0_SSID:    SSID al que conectar la wlan0.
+# - WLAN0_PSK:     PSK WPA2 a usar para la wlan0.
+#
+# - NOIP_DOMAIN:   Dominio dinamico registrado en noip.org.
+# - NOIP_USERNAME: Nombre de usuario de noip.
+# - NOIP_PASSWORD: Clave de noip.
+# -----------------------------------------------------------
+
+- hosts: microservers
+
+  tasks:
+
+    - include: tasks/bootstrap.yml
+      tags: bootstrap
+
+    - include: tasks/storage.yml
+      tags: storage
+
+    - include: tasks/mopidy.yml
+      tags: mopidy
+
+    - include: tasks/minidlna.yml
+      tags: minidlna
+
+  handlers:
+
+    - include: handlers/main.yml
+      tags: always

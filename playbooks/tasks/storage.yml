@@ -1,0 +1,42 @@
+---
+
+- name: Asegurarse de que el VG tank existe
+  sudo: yes
+  lvg:
+    vg: tank
+    state: present
+    pvs: /dev/sda
+
+- name: Asegurarse de que existen los volumenes basicos
+  sudo: yes
+  lvol:
+    vg: tank
+    lv: "{{ item }}"
+    state: present
+  with_items:
+    - top
+    - log
+
+- name: Montar /tank
+  sudo: yes
+  mount:
+    fstype: ext4
+    name: "{{ item.path }}"
+    src: /dev/mapper/tank-{{ item.volume }}
+    opts: noatime,nodiratime
+    state: mounted
+  with_items:
+    - path: /tank
+      volume: top
+    - path: /var/log
+      volume: log
+
+- name: Dar los permisos correctos a /tank
+  sudo: yes
+  file:
+    dest: /tank
+    owner: "{{ ansible_user_id }}"
+    group: services
+    mode: "0755"
+    state: directory
+
