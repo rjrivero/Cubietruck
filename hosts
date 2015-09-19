@@ -1,5 +1,5 @@
-[microservers]
-localhost wlan0_address=192.168.1.200
+[provisioner]
+localhost sd_mount=/mnt/cubie ansible_connection=local
 
-[microservers:vars]
-wlan0_gateway=192.168.1.1
+[microserver]
+cubietruck ansible_ssh_user=root

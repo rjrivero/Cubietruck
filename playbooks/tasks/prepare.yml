@@ -1,0 +1,85 @@
+---
+
+# ------------------------------------------------------
+# Preparacion de la SD para poder conectar por ssh
+# ------------------------------------------------------
+
+- name: Variables de entorno
+  set_fact:
+    home:          "{{ lookup('env', 'HOME')          }}"
+    wlan0_address: "{{ lookup('env', 'WLAN0_ADDRESS') }}"
+    wlan0_gateway: "{{ lookup('env', 'WLAN0_GATEWAY') }}"
+    wlan0_ssid:    "{{ lookup('env', 'WLAN0_SSID')    }}"
+    wlan0_psk:     "{{ lookup('env', 'WLAN0_PSK')     }}"
+
+- name: Configuracion de red
+  sudo: yes
+  when: wlan0_address and wlan0_gateway
+  template:
+    src: templates/interfaces
+    dest: "{{ sd_mount }}/etc/network/interfaces"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Cifrado del password WiFi
+  when: wlan0_ssid and wlan0_psk
+  shell: wpa_passphrase "{{ wlan0_ssid }}" "{{ wlan0_psk }}" | grep '[^#]psk'
+  register: wpa_stdout
+
+- name: Registro del password WiFi cifrado en variable de entorno
+  when: wlan0_ssid and wlan0_psk
+  set_fact:
+    wpa_passphrase: "{{ wpa_stdout.stdout }}"
+
+- name: Configuracion del suplicante wifi
+  sudo: yes
+  when: wlan0_ssid and wlan0_psk
+  template:
+    src: templates/wpa_supplicant.conf
+    dest: "{{ sd_mount }}/etc/wpa_supplicant/wpa_supplicant.conf"
+    owner: root
+    group: root
+    mode: "0640"
+
+- name: Creacion del directorio .ssh de root
+  sudo: yes
+  file:
+    dest: "{{ sd_mount }}/root/.ssh"
+    state: directory
+    owner: root
+    group: root
+    mode: "0750"
+
+- name: Creacion de la clave publica del usuario local
+  command: ssh-keygen -t rsa -b 4096 -f "{{ home }}/.ssh/id_rsa" -N ''
+  args:
+    creates: "{{ home }}/.ssh/id_rsa"
+
+- name: Carga del fichero del certificado
+  set_fact:
+    ssh_pubkey: "{{ lookup('file', home + '/.ssh/id_rsa.pub') }}"
+
+- name: Inclusion de la clave publica en el fichero de claves autorizadas
+  sudo: yes
+  lineinfile:
+    line: "{{ ssh_pubkey }}"
+    dest: "{{ sd_mount }}/root/.ssh/authorized_keys"
+    create: yes
+    owner: root
+    group: root
+    mode: "0640"
+
+- name: Permitir root login
+  sudo: yes
+  lineinfile:
+    dest: "{{ sd_mount }}/etc/ssh/sshd_config"
+    regexp: "^PermitRootLogin"
+    line: "PermitRootLogin yes"
+
+#- name: Solo permitir acceso con certificado
+#  sudo: yes
+#  lineinfile:
+#    dest: "{{ sd_mount }}/etc/ssh/sshd_config"
+#    regexp: "^PasswordAuthentication"
+#    line: "PasswordAuthentication no"

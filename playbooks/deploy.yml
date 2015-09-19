@@ -3,15 +3,13 @@
 # -----------------------------------------------------------
 # Este script requiere varias variables de entorno:
 #
-# - WLAN0_SSID:    SSID al que conectar la wlan0.
-# - WLAN0_PSK:     PSK WPA2 a usar para la wlan0.
-#
+# - WLAN0_ADDRESS: Direccion IP de la interfaz wlan0
 # - NOIP_DOMAIN:   Dominio dinamico registrado en noip.org.
 # - NOIP_USERNAME: Nombre de usuario de noip.
 # - NOIP_PASSWORD: Clave de noip.
 # -----------------------------------------------------------
 
-- hosts: microservers
+- hosts: microserver
 
   tasks:
 

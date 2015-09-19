@@ -1,0 +1,15 @@
+---
+
+# -----------------------------------------------------------
+# Este script requiere varias variables de entorno:
+#
+# - WLAN0_ADDRESS: Direccion IP para la interfaz wlan0.
+# - WLAN0_GATEWAY: Direccion del gateway por defecto en la red WiFi.
+# - WLAN0_SSID:    SSID al que conectar la wlan0.
+# - WLAN0_PSK:     PSK WPA2 a usar para la wlan0.
+# -----------------------------------------------------------
+
+- hosts: provisioner
+  tasks:
+    - include: tasks/prepare.yml
+      tags: bootstrap

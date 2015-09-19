@@ -2,14 +2,16 @@
 
 - name: Variables de entorno
   set_fact:
-    wlan0_ssid:    "{{ lookup('env', 'WLAN0_SSID')    }}"
-    wlan0_psk:     "{{ lookup('env', 'WLAN0_PSK')     }}"
+    wlan0_address: "{{ lookup('env', 'WLAN0_ADDRESS') }}"
     noip_domain:   "{{ lookup('env', 'NOIP_DOMAIN')   }}"
     noip_username: "{{ lookup('env', 'NOIP_USERNAME') }}"
     noip_password: "{{ lookup('env', 'NOIP_PASSWORD') }}"
 
+- name: Actualizacion de cache de apt
+  apt:
+    update_cache: yes
+
 - name: Instalacion de paquetes requeridos
-  sudo: yes
   apt:
     name: "{{ item }}"
     state: installed
@@ -27,37 +29,7 @@
     - ddclient
     - lvm2
     
-- name: Configuracion de red
-  sudo: yes
-  template:
-    src: templates/interfaces
-    dest: /etc/network/interfaces
-    owner: root
-    group: root
-    mode: "0644"
-
-- name: Cifrado del password WiFi
-  when: wlan0_ssid and wlan0_psk
-  shell: wpa_passphrase "{{ wlan0_ssid }}" "{{ wlan0_psk }}" | grep '[^#]psk'
-  register: wpa_stdout
-
-- name: Registro del password WiFi cifrado en variable de entorno
-  when: wlan0_ssid and wlan0_psk
-  set_fact:
-    wpa_passphrase: "{{ wpa_stdout.stdout }}"
-
-- name: Configuracion del suplicante wifi
-  sudo: yes
-  when: wlan0_ssid and wlan0_psk
-  template:
-    src: templates/wpa_supplicant.conf
-    dest: /etc/wpa_supplicant/wpa_supplicant.conf
-    owner: root
-    group: root
-    mode: "0640"
-
 - name: Configuracion de sysctl
-  sudo: yes
   template:
     src: templates/60-routing.conf
     dest: /etc/sysctl.d/60-routing.conf
@@ -66,7 +38,6 @@
     mode: "0644"
 
 - name: Copia del script /etc/rc.local
-  sudo: yes
   file:
     src: files/rc.local
     dest: /etc/rc.local
@@ -75,7 +46,6 @@
     mode: "0644"
 
 - name: Configuracion de NAT
-  sudo: yes
   copy:
     src: files/rules.v4
     dest: /etc/iptables/rules.v4
@@ -85,14 +55,12 @@
   notify: Reiniciar iptables
 
 - name: Configuracion del servicio netfilter
-  sudo: yes
   service:
     name: netfilter-persistent
     enabled: yes
     state: started
 
 - name: Configuracion de resolvconf
-  sudo: yes
   copy:
     src: files/resolv.conf
     dest: /etc/resolvconf/resolv.conf.d/tail
@@ -102,7 +70,6 @@
   notify: Reiniciar resolvconf
     
 - name: Configuracion de dnsmasq
-  sudo: yes
   copy:
     src: files/eth0.conf
     dest: /etc/dnsmasq.d/eth0.conf
@@ -112,7 +79,6 @@
   notify: Reiniciar dnsmasq
 
 - name: Incluir el nombre publico en /etc/hosts, para dnsmasq
-  sudo: yes
   when: wlan0_address and noip_domain
   lineinfile:
     dest: /etc/hosts
@@ -121,7 +87,6 @@
   notify: Reiniciar dnsmasq
 
 - name: Configuracion de noip
-  sudo: yes
   when: noip_domain and noip_username and noip_password
   template:
     src: templates/ddclient.conf
@@ -132,7 +97,6 @@
   notify: Reiniciar ddclient
 
 - name: Garantizar que los servicios se inician al arranque
-  sudo: yes
   service:
     name: "{{ item }}"
     enabled: yes
@@ -143,7 +107,37 @@
     - ddclient
 
 - name: Crear grupo generico de servicio
-  sudo: yes
   group:
     name: services
     state: present
+
+- name: Crear usuario cubie
+  user:
+    name: cubie
+    home: /home/cubie
+    createhome: yes
+    groups: sudo,services
+    shell: /bin/bash
+    state: present
+
+- name: Crear directorio ssh
+  file:
+    dest: /home/cubie/.ssh
+    state: directory
+    owner: cubie
+    group: cubie
+    mode: "0750"
+
+- name: Cargar la clave publica del usuario remoto
+  set_fact:
+    ssh_pubkey: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+- name: Permitir login a cubie con certificado
+  lineinfile:
+    dest: /home/cubie/.ssh/authorized_keys
+    line: "{{ ssh_pubkey }}"
+    create: yes
+    owner: cubie
+    group: cubie
+    mode: 0640
+

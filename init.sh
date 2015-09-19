@@ -11,9 +11,9 @@
 # source ./init.sh
 # -------------------------------------------
 
-export VIRTUALENV_DIR="${VIRTUALENV_DIR:-$HOME/virtualenvs/ansible}"
-export ANSIBLE_INVENTORY="$VIRTUALENV_DIR/inventory/hosts"
 export CWD=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+export ANSIBLE_INVENTORY="$CWD/hosts"
+export VIRTUALENV_DIR="${VIRTUALENV_DIR:-$CWD/..}"
 
 # Si se nos pasa "-U" en la linea de comandos, actualizar.
 # Para actualizar ansible:
@@ -40,4 +40,14 @@ if [ "x$1" == "x-U" ]; then
     update
 fi
 
+# Descifrar el fichero de variables de entorno
+export ENVFILE="$CWD/environment"
+if [ ! -f "$ENVFILE" ]; then
+    echo "********************************************"
+    echo "DESCIFRANDO FICHERO CON VARIABLES DE ENTORNO"
+    echo "********************************************"
+    ansible-vault decrypt --ask-vault-pass --output="$ENVFILE" "$ENVFILE.vault"
+fi
+source "$ENVFILE"
+       
 popd
