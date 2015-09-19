@@ -80,14 +80,9 @@
     owner: cubie
     group: cubie
 
-- name: Tarea de supervisor para arrancar Mopidy
+- name: Tarea de runit para arrancar Mopidy
   copy:
-    src: files/start-mopidy.conf
-    dest: /etc/supervisor/conf.d/start-mopidy.conf
-  notify: Reiniciar supervisor
-
-- name: Lanzar la tarea de escanear la biblioteca
-  ignore_errors: true
-  supervisorctl:
-    name: mopidy_scan
-    state: started
+    src: files/runit/mopidy
+    dest: /etc/service
+    mode: "0755"
+    directory_mode: "0755"

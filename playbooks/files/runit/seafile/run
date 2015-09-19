@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+cd /tank/seafile
+chpst -u www-data seafile-server-latest/seafile.sh start
+sleep 10 # dar tiempo a iniciar la interfaz
+exec chpst -u www-data seafile-server-latest/seahub.sh start-fastcgi

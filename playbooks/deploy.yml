@@ -38,34 +38,54 @@
         - bootstrap
         - ddclient
 
+    - include: tasks/storage.yml
+      tags:
+        - bootstrap
+        - storage
+
     - include: tasks/users.yml
       tags:
         - bootstrap
         - users
 
-    - include: tasks/storage.yml
-      tags: storage
-
     - include: tasks/audio.yml
       tags:
-        - audio
         - mopidy
+        - audio
 
       # Para escanear la biblioteca local:
       # supervisorctl restart mopidy_scan
     - include: tasks/mopidy.yml
-      tags: mopidy
+      tags:
+        - mopidy
 
     - include: tasks/minidlna.yml
-      tags: minidlna
+      tags:
+        - minidlna
 
     - include: tasks/mysql.yml
       tags:
-        - mysql
         - seafile
+        - mysql
+
+    - include: tasks/nginx.yml
+      tags:
+        - seafile
+        - torrent
+        - nginx
 
     - include: tasks/seafile.yml
-      tags: seafile
+      tags:
+        - seafile
+
+    - include: tasks/torrent.yml
+      tags:
+        - torrent
+
+    - include: tasks/tools.yml
+      tags:
+        - torrent
+        - tools
 
   handlers:
 

@@ -1,0 +1,75 @@
+---
+
+# ----------------------------------------------
+# Configura el demonio de transmission
+# ----------------------------------------------
+
+- name: Cargar la clave de transmission
+  set_fact:
+    transmission_password: "{{ lookup('env', 'TRANSMISSION_PASSWORD') }}"
+
+- name: Comprobar que el volumen para el torrent esta creado
+  lvol:
+    vg: tank
+    lv: torrent
+    state: present
+  notify: Reiniciar transmission
+
+- name: Montar /tank/torrent
+  mount:
+    fstype: ext4
+    name: /tank/torrent
+    src: /dev/mapper/tank-torrent
+    opts: noatime,nodiratime
+    state: mounted
+  notify: Reiniciar transmission
+
+- name: Dar al datastore los permisos correctos
+  file:
+    dest: /tank/torrent
+    owner: cubie
+    group: cubie
+    recurse: yes
+  notify: Reiniciar transmission
+
+- name: Detener temporalmente el demonio para cambiar el fichero de settings
+  service:
+    name: transmission-daemon
+    state: stopped
+
+- name: Cambiar el usuario con el que se ejecuta el demonio
+  lineinfile:
+    dest: /etc/default/transmission-daemon
+    line: USER=cubie
+    regexp: ^USER=
+
+- name: Actualizar el fichero de settings
+  template:
+    src: templates/transmission-settings.json
+    dest: /etc/transmission-daemon/settings.json
+  register: transmission_config
+
+- name: Permitir que el demonio pueda escribir en sus directorios...
+  file:
+    dest: "{{ item }}"
+    owner: cubie
+    group: cubie
+    recurse: yes
+  with_items:
+    - /var/lib/transmission-daemon
+    - /etc/transmission-daemon
+
+  # Ignore errors porque por algun motivo que aun desconozco, cuando cambio
+  # el usuario de transmission, el servicio siempre da un warning.
+- name: Volver a activar el demonio
+  ignore_errors: true
+  service:
+    name: transmission-daemon
+    state: started
+
+- name: Recargar el demonio para que sobrescriba el password
+  when: transmission_config.changed
+  ignore_errors: true
+  service:
+    name: transmission-daemon
+    state: restarted

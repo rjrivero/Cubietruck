@@ -1,0 +1,33 @@
+---
+
+# -----------------------------------------------------
+# Aplicaciones que vaya desarrollando para la Cubie
+# -----------------------------------------------------
+
+- name: Instalar virtualenv de herramientas
+  become: yes
+  become_user: cubie
+  pip:
+    virtualenv: /home/cubie/tools
+    virtualenv_site_packages: yes
+    state: present
+    name: "{{ item }}"
+  with_items:
+    - subliminal
+
+- name: Descargar repositorio de tools
+  git:
+    accept_hostkey: yes
+    clone: yes
+    dest: /home/cubie/tools/src
+    repo: https://github.com/rjrivero/cubietools.git
+    update: yes
+
+- name: Ajustar los permisos del virtualenv
+  file:
+    path: /home/cubie/tools
+    state: directory
+    recurse: yes
+    owner: cubie
+
+

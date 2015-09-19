@@ -38,7 +38,7 @@
     name: mysql
     state: restarted
 
-- name: Reiniciar seafile
-  supervisorctl:
-    name: seafile
+- name: Reiniciar nginx
+  service:
+    name: nginx
     state: restarted

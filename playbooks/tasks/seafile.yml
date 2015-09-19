@@ -25,17 +25,16 @@
     state: mounted
   notify: Reiniciar seafile
 
-- name: Copiar los scripts de supervisor
-  copy:
-    src: files/start-seafile.conf
-    dest: /etc/supervisor/conf.d/start-seafile.conf
-  notify: Reiniciar supervisor
-
 - name: Dar al datastore los permisos correctos
   file:
     dest: /tank/seafile
     owner: www-data
     group: www-data
     recurse: yes
-  notify: Reiniciar seafile
 
+- name: Copiar los scripts de runit
+  copy:
+    src: files/runit/seafile
+    dest: /etc/service
+    mode: "0755"
+    directory_mode: "0755"

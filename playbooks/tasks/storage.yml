@@ -18,8 +18,9 @@
   with_items:
     - top
     - log
+    - home
 
-- name: Montar /tank
+- name: Montar /tank, /log y /home
   mount:
     fstype: ext4
     name: "{{ item.path }}"
@@ -31,6 +32,8 @@
       volume: top
     - path: /var/log
       volume: log
+    - path: /home
+      volume: home
 
 - name: Dar los permisos correctos a /tank
   file:

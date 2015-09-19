@@ -35,8 +35,7 @@
     - dnsutils
     - ddclient
     - lvm2
-    - minidlna
-    - supervisor
+    - runit
 # Para construir dependencias de mopidy, beets y otros
     - python-dev
     - python-pip
@@ -59,6 +58,12 @@
     - mysql-client
     - python-imaging
     - python-mysqldb
+# Para montar el proxy inverso que reparta el acceso web
+    - nginx
+# Para el torrent
+    - transmission-daemon
+# Para el servidor minidlna
+    - minidlna
 
 #- name: Copiar mp3gain compilado para armhf
 #  copy:
@@ -78,5 +83,8 @@
     - dnsmasq
     - ddclient
     - minidlna
-    - supervisor
     - mysql
+    - nginx
+    - transmission-daemon
+#     Para iniciar runit, hay que rebotar o ejecutar "init q"
+#   - runit

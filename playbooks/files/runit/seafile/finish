@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+# Do nothing - seafile has its own supervisor, we just have to
+# launch and forget.
+sleep infinity
