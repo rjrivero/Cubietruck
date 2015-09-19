@@ -1,11 +1,8 @@
 ---
 
-- name: Instalacion de paquetes requeridos
-  apt:
-    name: "{{ item }}"
-    state: installed
-  with_items:
-    - minidlna
+# ------------------------------------------------------
+# Configura minidlna
+# ------------------------------------------------------
 
 - name: Configuracion de minidlna
   copy:
@@ -24,8 +21,3 @@
     group: root
     mode: "0644"
   notify: Reiniciar sysctl
-
-- name: Activar servicio minidlna
-  service:
-    name: minidlna
-    enabled: yes

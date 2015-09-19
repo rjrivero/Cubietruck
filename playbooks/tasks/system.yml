@@ -1,0 +1,21 @@
+---
+
+# ------------------------------------------------------
+# Configura variables basicas de sistema (sysctl, rc.local, etc)
+# ------------------------------------------------------
+
+- name: Configuracion de sysctl
+  copy:
+    src: files/60-routing.conf
+    dest: /etc/sysctl.d/60-routing.conf
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Copia del script /etc/rc.local
+  file:
+    src: files/rc.local
+    dest: /etc/rc.local
+    owner: root
+    group: root
+    mode: "0644"

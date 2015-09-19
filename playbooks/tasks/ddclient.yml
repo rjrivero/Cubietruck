@@ -1,0 +1,22 @@
+---
+
+# ------------------------------------------------------
+# Configura DDclient
+# ------------------------------------------------------
+
+- name: Variables de entorno
+  set_fact:
+    wlan0_address: "{{ lookup('env', 'WLAN0_ADDRESS') }}"
+    noip_domain:   "{{ lookup('env', 'NOIP_DOMAIN')   }}"
+    noip_username: "{{ lookup('env', 'NOIP_USERNAME') }}"
+    noip_password: "{{ lookup('env', 'NOIP_PASSWORD') }}"
+
+- name: Configuracion de noip
+  when: noip_domain and noip_username and noip_password
+  template:
+    src: templates/ddclient.conf
+    dest: /etc/ddclient.conf
+    owner: root
+    group: root
+    mode: "0640"
+  notify: Reiniciar ddclient

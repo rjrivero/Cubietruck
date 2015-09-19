@@ -1,0 +1,82 @@
+---
+
+# ------------------------------------------------------
+# Instala los paquetes y prepara los servicios nativos para arrancar.
+#
+# Como cada entorno (Wheezy, Jessie, Ubuntu) tiene su conjunto de
+# paquetes propios con su nomenclatura y dependencias, todas las 
+# instalaciones las manejo con este fichero. Cuando cambie de sistema,
+# Este debería ser el único playbook que haga falta actualizar.
+# ------------------------------------------------------
+
+# Repositorio gstreamer0.10-ffmpeg para ubuntu
+# https://launchpad.net/~mc3man/+archive/ubuntu/gstffmpeg-keep
+#- name: Agregar repositorio de gstreamer0.10-ffmpeg
+#  apt_repository:
+#    repo: ppa:mc3man/gstffmpeg-keep
+#    state: present
+#    update_cache: yes
+
+- name: Actualizacion de cache de apt
+  apt:
+    update_cache: yes
+    upgrade: safe
+
+- name: Instalacion de paquetes requeridos (Wheezy)
+  apt:
+    update_cache: no
+    name: "{{ item }}"
+    state: installed
+  with_items:
+# Paquetes genericos, para explotar el sistema
+    - iptables-persistent
+    - resolvconf
+    - dnsmasq
+    - dnsutils
+    - ddclient
+    - lvm2
+    - minidlna
+    - supervisor
+# Para construir dependencias de mopidy, beets y otros
+    - python-dev
+    - python-pip
+    - python-virtualenv
+    - build-essential
+# Para probar y procesar el sonido
+    - alsaplayer
+    - alsaplayer-text
+    - mp3gain
+# Paquetes para Mopidy
+    - gstreamer-tools
+    - python-gst0.10
+    - gstreamer0.10-plugins-good
+    - gstreamer0.10-plugins-bad
+    - gstreamer0.10-plugins-ugly
+    - gstreamer0.10-ffmpeg
+    - gstreamer0.10-alsa
+# Para seafile
+    - mysql-server
+    - mysql-client
+    - python-imaging
+    - python-mysqldb
+
+#- name: Copiar mp3gain compilado para armhf
+#  copy:
+#    src: bin/mp3gain
+#    dest: /usr/bin/mp3gain
+#    owner: root
+#    group: root
+#    mode: "0755"
+
+- name: Garantizar que los servicios se inician al arranque
+  service:
+    name: "{{ item }}"
+    enabled: yes
+  with_items:
+    - iptables-persistent
+    - resolvconf
+    - dnsmasq
+    - ddclient
+    - minidlna
+    - supervisor
+    - mysql

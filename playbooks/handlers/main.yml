@@ -1,35 +1,44 @@
 ---
 
 - name: Reiniciar sysctl
-  sudo: yes
   command: sysctl --system
   
 - name: Reiniciar iptables
-  sudo: yes
   service:
     name: netfilter-persistent
     state: restarted
 
 - name: Reiniciar resolvconf
-  sudo: yes
   service:
     name: resolvconf
     state: restarted
 
 - name: Reiniciar dnsmasq
-  sudo: yes
   service:
     name: dnsmasq
     state: restarted
 
 - name: Reiniciar ddclient
-  sudo: yes
   service:
     name: ddclient
     state: restarted
 
+- name: Reiniciar supervisor
+  service:
+    name: supervisor
+    state: restarted
+
 - name: Reiniciar minidlna
-  sudo: yes
   service:
     name: minidlna
+    state: restarted
+
+- name: Reiniciar mysql
+  service:
+    name: mysql
+    state: restarted
+
+- name: Reiniciar seafile
+  supervisorctl:
+    name: seafile
     state: restarted

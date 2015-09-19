@@ -1,38 +1,39 @@
 ---
 
-# Repositorio gstreamer0.10-ffmpeg para ubuntu
-# https://launchpad.net/~mc3man/+archive/ubuntu/gstffmpeg-keep
-- name: Agregar repositorio de gstreamer0.10-ffmpeg
-  apt_repository:
-    repo: ppa:mc3man/gstffmpeg-keep
+# ------------------------------------------------------
+# Instala y configura Mopidy
+# ------------------------------------------------------
+
+- name: Variables de entorno
+  set_fact:
+    wlan0_address:   "{{ lookup('env', 'WLAN0_ADDRESS') }}"
+    lastfm_user:     "{{ lookup('env', 'LASTFM_USER') }}"
+    lastfm_password: "{{ lookup('env', 'LASTFM_PASSWORD') }}"
+
+- name: Instalar beets, mopidy
+  become: yes
+  become_user: cubie
+  pip:
+    virtualenv: /home/cubie/mopidy
+    virtualenv_site_packages: yes
     state: present
-    update_cache: yes
-
-- name: Instalacion de paquetes requeridos
-  apt:
     name: "{{ item }}"
-    state: installed
   with_items:
-    - gstreamer-tools
-    - build-essential
-    - python-dev
-    - python-pip
-    - python-gst0.10
-    - alsaplayer
-    - alsaplayer-text
-    - mp3gain
-    - gstreamer0.10-plugins-ugly
-    - gstreamer0.10-plugins-bad
-    - gstreamer0.10-ffmpeg
-    - gstreamer0.10-alsa
+    - beets
+    - requests
+    - pylast
+    - flask
+    - Mopidy
+    - Mopidy-TuneIn
+    - Mopidy-Scrobbler 
 
-- name: Copiar mp3gain compilado para armhf
-  copy:
-    src: bin/mp3gain
-    dest: /usr/bin/mp3gain
-    owner: root
-    group: root
-    mode: "0755"
+- name: Ajustar los permisos del virtualenv
+  file:
+    path: /home/cubie/mopidy
+    state: directory
+    recurse: yes
+    owner: cubie
+    group: cubie
 
 - name: Comprobar que existe el volumen de musica
   lvol:
@@ -47,3 +48,46 @@
     src: /dev/mapper/tank-musica
     opts: noatime,nodiratime
     state: mounted
+
+- name: Comprobar que estan todos los paths, con sus permisos
+  file:
+    dest: "{{ item }}"
+    state: directory
+    owner: cubie
+    group: cubie
+    recurse: yes
+  with_items:
+    - /tank/musica
+    - /tank/musica/libreria
+    - /tank/musica/mopidy
+    - /tank/musica/mopidy/local
+    - /tank/musica/mopidy/playlists
+    - /tank/musica/beets
+    - /home/cubie/.config/beets
+    - /home/cubie/.config/mopidy
+
+- name: Fichero de configuracion de beets
+  copy:
+    src:   files/beets_config.yaml
+    dest:  /home/cubie/.config/beets/config.yaml
+    owner: cubie
+    group: cubie
+
+- name: Fichero de configuracion de mopidy
+  template:
+    src:   templates/mopidy.conf
+    dest:  /home/cubie/.config/mopidy/mopidy.conf
+    owner: cubie
+    group: cubie
+
+- name: Tarea de supervisor para arrancar Mopidy
+  copy:
+    src: files/start-mopidy.conf
+    dest: /etc/supervisor/conf.d/start-mopidy.conf
+  notify: Reiniciar supervisor
+
+- name: Lanzar la tarea de escanear la biblioteca
+  ignore_errors: true
+  supervisorctl:
+    name: mopidy_scan
+    state: started

@@ -1,0 +1,41 @@
+---
+
+# ----------------------------------------------------------------------
+# Instala el servicio mysql.
+# Si al arrancar da un error "Access denied for user 'debian-sys-maint',
+# seguir los pasos indicados en:
+# http://storm.malditainternet.com/wp/2010/10/agregar-nuevamente-el-usuario-debian-sys-maint-a-mysql/
+# ----------------------------------------------------------------------
+
+- name: Comprobar que el volumen de mysql esta creado
+  lvol:
+    vg: tank
+    lv: mysql
+    state: present
+  notify: Reiniciar mysql
+
+- name: Montar /tank/mysql
+  mount:
+    fstype: ext4
+    name: /tank/mysql
+    src: /dev/mapper/tank-mysql
+    opts: noatime,nodiratime
+    state: mounted
+  notify: Reiniciar mysql
+
+- name: Dar al datastore los permisos correctos
+  file:
+    dest: /tank/mysql
+    owner: mysql
+    group: mysql
+    recurse: yes
+  notify: Reiniciar mysql
+
+- name: Cambiar el datadir por defecto
+  copy:
+    src: files/mysql-datadir.cnf
+    dest: /etc/mysql/conf.d/mysql-datadir.cnf
+    owner: mysql
+    group: mysql
+  notify: Reiniciar mysql
+

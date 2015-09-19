@@ -1,0 +1,42 @@
+---
+
+# ------------------------------------------------------
+# Crea el usuario "cubie" y configura los certificados
+# ------------------------------------------------------
+
+
+- name: Crear grupo generico de servicio
+  group:
+    name: services
+    state: present
+
+- name: Crear usuario cubie
+  user:
+    name: cubie
+    home: /home/cubie
+    createhome: yes
+    groups: sudo,services
+    shell: /bin/bash
+    state: present
+
+- name: Crear directorio ssh
+  file:
+    dest: /home/cubie/.ssh
+    state: directory
+    owner: cubie
+    group: cubie
+    mode: "0750"
+
+- name: Cargar la clave publica del usuario remoto
+  set_fact:
+    ssh_pubkey: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+- name: Permitir login a cubie con certificado
+  lineinfile:
+    dest: /home/cubie/.ssh/authorized_keys
+    line: "{{ ssh_pubkey }}"
+    create: yes
+    owner: cubie
+    group: cubie
+    mode: 0640
+

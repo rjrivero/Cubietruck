@@ -1,0 +1,20 @@
+library:   /tank/musica/beets/library.blb
+plugins:   web fetchart lastgenre
+ignore: ._* *~ ~*
+ 
+paths:
+    default: $albumartist/$album%aunique{}/$track $title
+    singleton: Non-Album/$artist/$title
+    comp: Compilations/$album%aunique{}/$track $title
+ 
+import:
+    quiet_fallback: skip
+    timid: no
+    copy: yes
+    write: yes
+    log: beets.log
+    languages: es en
+ 
+lastgenre:
+    count: 3
+

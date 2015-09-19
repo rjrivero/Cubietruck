@@ -1,0 +1,38 @@
+---
+
+# ------------------------------------------------------
+# Configura dnsmasq
+# ------------------------------------------------------
+
+- name: Variables de entorno
+  set_fact:
+    wlan0_address: "{{ lookup('env', 'WLAN0_ADDRESS') }}"
+    noip_domain:   "{{ lookup('env', 'NOIP_DOMAIN')   }}"
+    noip_username: "{{ lookup('env', 'NOIP_USERNAME') }}"
+    noip_password: "{{ lookup('env', 'NOIP_PASSWORD') }}"
+
+- name: Configuracion de resolvconf
+  copy:
+    src: files/resolv.conf
+    dest: /etc/resolvconf/resolv.conf.d/tail
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reiniciar resolvconf
+    
+- name: Configuracion de dnsmasq
+  copy:
+    src: files/eth0.conf
+    dest: /etc/dnsmasq.d/eth0.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reiniciar dnsmasq
+
+- name: Incluir el nombre publico en /etc/hosts, para dnsmasq
+  when: wlan0_address and noip_domain
+  lineinfile:
+    dest: /etc/hosts
+    regexp: "^{{ wlan0_address }}"
+    line: "{{ wlan0_address }} {{ noip_domain }}"
+  notify: Reiniciar dnsmasq

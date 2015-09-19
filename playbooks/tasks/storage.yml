@@ -1,5 +1,9 @@
 ---
 
+# ------------------------------------------------------
+# Prepara los volumenes logicos basicos
+# ------------------------------------------------------
+
 - name: Asegurarse de que el VG tank existe
   lvg:
     vg: tank

@@ -1,0 +1,2 @@
+[mysqld]
+datadir = /tank/mysql

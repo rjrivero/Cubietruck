@@ -77,6 +77,19 @@
     regexp: "^PermitRootLogin"
     line: "PermitRootLogin yes"
 
+- name: Pre-configurar DNS
+  sudo: yes
+  lineinfile:
+    line: "nameserver {{ item }}"
+    dest: "{{ sd_mount }}/etc/resolv.conf"
+    create: yes
+    owner: root
+    group: root
+    mode: "0644"
+  with_items:
+    - 8.8.8.8
+    - 8.8.4.4
+
 #- name: Solo permitir acceso con certificado
 #  sudo: yes
 #  lineinfile:

@@ -13,17 +13,59 @@
 
   tasks:
 
-    - include: tasks/bootstrap.yml
-      tags: bootstrap
+    - include: tasks/packages.yml
+      tags:
+        - bootstrap
+        - packages
+
+    - include: tasks/system.yml
+      tags:
+        - bootstrap
+        - system
+
+    - include: tasks/firewall.yml
+      tags:
+        - bootstrap
+        - firewall
+
+    - include: tasks/dnsmasq.yml
+      tags:
+        - bootstrap
+        - dnsmasq
+
+    - include: tasks/ddclient.yml
+      tags:
+        - bootstrap
+        - ddclient
+
+    - include: tasks/users.yml
+      tags:
+        - bootstrap
+        - users
 
     - include: tasks/storage.yml
       tags: storage
 
+    - include: tasks/audio.yml
+      tags:
+        - audio
+        - mopidy
+
+      # Para escanear la biblioteca local:
+      # supervisorctl restart mopidy_scan
     - include: tasks/mopidy.yml
       tags: mopidy
 
     - include: tasks/minidlna.yml
       tags: minidlna
+
+    - include: tasks/mysql.yml
+      tags:
+        - mysql
+        - seafile
+
+    - include: tasks/seafile.yml
+      tags: seafile
 
   handlers:
 

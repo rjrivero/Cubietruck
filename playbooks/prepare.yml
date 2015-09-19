@@ -11,5 +11,5 @@
 
 - hosts: provisioner
   tasks:
-    - include: tasks/prepare.yml
+    - include: tasks/prepare_sd.yml
       tags: bootstrap

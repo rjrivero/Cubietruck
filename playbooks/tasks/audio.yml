@@ -1,0 +1,19 @@
+---
+
+# ------------------------------------------------------
+# Configura la salida de audio SPDIF
+# ------------------------------------------------------
+
+- name: Agregar el usuario cubie a los grupos audio, video
+  user:
+    name: cubie
+    groups: audio,video
+    append: yes
+
+- name: Configurar alsa para que use la salida SPDIF
+  copy:
+    src: files/asound.conf
+    dest: /etc/asound.conf
+    owner: root
+    group: root
+    mode: "0644"

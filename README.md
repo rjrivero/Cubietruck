@@ -21,7 +21,7 @@ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 
 ```
 # Algunas de las dependencias de Ansible requieren Python-dev
-sudo apt-get install virtualenv python-dev python-pip
+sudo apt-get install python-virtualenv python-dev python-pip
 
 # Crear el virtualenv y entrar en el directorio
 virtualenv --system-site-packages cubie && cd cubie
@@ -42,12 +42,14 @@ Variables de entorno
 
 Los playbooks de este proyecto utilizan una serie de variables de entorno:
 
-    - *WLAN0_ADDRESS*: Dirección IP a asignar a la interfaz wlan0 de la Cubie.
-    - *WLAN0_SSID*:    SSID al que conectar la wlan0.
-    - *WLAN0_PSK*:     PSK WPA2 a usar para la wlan0.
-    - *NOIP_DOMAIN*:   Dominio dinámico registrado en noip.org.
-    - *NOIP_USERNAME*: Nombre de usuario de noip.
-    - *NOIP_PASSWORD*: Clave de noip.
+  - *WLAN0_ADDRESS*: Dirección IP a asignar a la interfaz wlan0 de la Cubie.
+  - *WLAN0_SSID*:    SSID al que conectar la wlan0.
+  - *WLAN0_PSK*:     PSK WPA2 a usar para la wlan0.
+  - *NOIP_DOMAIN*:   Dominio dinámico registrado en noip.org.
+  - *NOIP_USERNAME*: Nombre de usuario de noip.
+  - *NOIP_PASSWORD*: Clave de noip.
+  - *LASTFM_USER*:   Nombre de usuario de last.fm.
+  - *LASTFM_PASSWORD*: Clave de last.fm.
 
 Para facilitar trabajar con ellos, si existe en el directorio un fichero llamado **environment**, *init.sh* lo invoca para que pueda establecer las variables de entorno. Si no existe el fichero *environment*, *init.sh* intenta crearlo descifrando el fichero **environment.vault**.
 
