@@ -1,0 +1,8 @@
+#!/bin/sh
+
+LOGDIR=/var/log/mopidy
+
+mkdir -p $LOGDIR
+chown cubie:cubie $LOGDIR
+cd    $LOGDIR
+exec  chpst -u cubie svlogd -tt $LOGDIR

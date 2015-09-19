@@ -13,4 +13,4 @@ if [ ! -f "${HOME}/.local/share/mopidy/local/library.json.gz" ]; then
 fi
 
 # Ejecuto mopidy
-exec chpst -u cubie:audio mopidy/bin/mopidy 
+exec chpst -u cubie:audio mopidy/bin/mopidy 2>&1
