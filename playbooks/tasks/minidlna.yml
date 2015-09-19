@@ -4,6 +4,44 @@
 # Configura minidlna
 # ------------------------------------------------------
 
+- name: Permisos de la ruta donde se guarda la cache
+  file:
+    dest: /tank/minidlna
+    state: directory
+    owner: cubie
+    group: cubie
+    recurse: yes
+
+- name: Descargar minidlna desde el codigo fuente
+  git:
+    repo: git://git.code.sf.net/p/minidlna/git
+    clone: yes
+    dest: /tank/minidlna/src
+
+- name: Ejecutar autogen
+  command: ./autogen.sh
+  args:
+    chdir: /tank/minidlna/src
+    creates: /tank/minidlna/src/configure
+
+- name: Ejecutar configure
+  command: ./configure
+  args:
+    chdir: /tank/minidlna/src
+    creates: /tank/minidlna/src/Makefile
+
+- name: Ejecutar make
+  command: make
+  args:
+    chdir: /tank/minidlna/src
+    creates: /tank/minidlna/src/minidlnad
+
+- name: Pasar minidlnad al path
+  command: cp minidlnad /usr/bin
+  args:
+    chdir: /tank/minidlna/src
+    creates: /usr/bin/minidlnad
+
 - name: Configuracion de minidlna
   copy:
     src: files/minidlna.conf
@@ -11,7 +49,6 @@
     owner: root
     group: root
     mode: "0644"
-  notify: Reiniciar minidlna
 
 - name: Aumento del numero de handlers de inotify
   copy:
@@ -21,3 +58,10 @@
     group: root
     mode: "0644"
   notify: Reiniciar sysctl
+
+- name: Tarea de runit para arrancar minidlna
+  copy:
+    src: files/runit/minidlna
+    dest: /etc/service
+    mode: "0755"
+    directory_mode: "0755"

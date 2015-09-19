@@ -62,8 +62,21 @@
     - nginx
 # Para el torrent
     - transmission-daemon
-# Para el servidor minidlna
-    - minidlna
+# Para el servidor minidlna: Lo voy a instalar desde el codigo fuente
+# porque el paquete preinstalado de armbian wheezy me falla.
+# Ver: http://www.htpcbeginner.com/install-minidlna-on-ubuntu-ultimate-guide/
+    - gettext
+    - autopoint
+    - libavcodec-dev
+    - libavutil-dev
+    - libavformat-dev
+    - libjpeg-dev
+    - libsqlite3-dev
+    - libexif-dev
+    - libid3tag0-dev
+    - libogg-dev
+    - libvorbis-dev
+    - flac-dev
 
 #- name: Copiar mp3gain compilado para armhf
 #  copy:
@@ -82,9 +95,9 @@
     - resolvconf
     - dnsmasq
     - ddclient
-    - minidlna
     - mysql
     - nginx
     - transmission-daemon
+#   - minidlna
 #     Para iniciar runit, hay que rebotar o ejecutar "init q"
 #   - runit

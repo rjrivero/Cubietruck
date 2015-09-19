@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Ejecuto minidlna
+exec chpst -u cubie:cubie minidlnad -d -f /etc/minidlna.conf
