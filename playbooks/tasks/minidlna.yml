@@ -1,7 +1,6 @@
 ---
 
 - name: Instalacion de paquetes requeridos
-  sudo: yes
   apt:
     name: "{{ item }}"
     state: installed
@@ -9,7 +8,6 @@
     - minidlna
 
 - name: Configuracion de minidlna
-  sudo: yes
   copy:
     src: files/minidlna.conf
     dest: /etc/minidlna.conf
@@ -19,7 +17,6 @@
   notify: Reiniciar minidlna
 
 - name: Aumento del numero de handlers de inotify
-  sudo: yes
   copy:
     src: files/10-inotify.conf
     dest: /etc/sysctl.d/10-inotify.conf
@@ -29,7 +26,6 @@
   notify: Reiniciar sysctl
 
 - name: Activar servicio minidlna
-  sudo: yes
   service:
     name: minidlna
     enabled: yes

@@ -3,14 +3,12 @@
 # Repositorio gstreamer0.10-ffmpeg para ubuntu
 # https://launchpad.net/~mc3man/+archive/ubuntu/gstffmpeg-keep
 - name: Agregar repositorio de gstreamer0.10-ffmpeg
-  sudo: yes
   apt_repository:
     repo: ppa:mc3man/gstffmpeg-keep
     state: present
     update_cache: yes
 
 - name: Instalacion de paquetes requeridos
-  sudo: yes
   apt:
     name: "{{ item }}"
     state: installed
@@ -29,7 +27,6 @@
     - gstreamer0.10-alsa
 
 - name: Copiar mp3gain compilado para armhf
-  sudo: yes
   copy:
     src: bin/mp3gain
     dest: /usr/bin/mp3gain
@@ -38,14 +35,12 @@
     mode: "0755"
 
 - name: Comprobar que existe el volumen de musica
-  sudo: yes
   lvol:
     vg: tank
     lv: musica
     state: present
 
 - name: Montar el volumen de musica
-  sudo: yes
   mount:
     fstype: ext4
     name: /tank/musica
