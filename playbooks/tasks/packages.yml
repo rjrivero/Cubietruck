@@ -76,7 +76,7 @@
     - libid3tag0-dev
     - libogg-dev
     - libvorbis-dev
-    - flac-dev
+    - libflac-dev
 
 #- name: Copiar mp3gain compilado para armhf
 #  copy:

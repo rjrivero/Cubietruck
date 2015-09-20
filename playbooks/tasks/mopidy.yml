@@ -23,6 +23,10 @@
     - requests
     - pylast
     - flask
+    # Mopidy 1.1.0 y 1.1.1 tienen problemas con algunos tipos de
+    # URLs de tunein; en particular, con las de Rock FM. Si cuando
+    # se ejecute el playbook no se escucha tunein, fijar la version.
+    # - Mopidy==1.0.8
     - Mopidy
     - Mopidy-TuneIn
     - Mopidy-Scrobbler 
