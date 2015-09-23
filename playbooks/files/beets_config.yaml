@@ -1,4 +1,5 @@
 library:   /tank/musica/beets/library.blb
+directory: /tank/musica/libreria
 plugins:   web fetchart lastgenre
 ignore: ._* *~ ~*
  

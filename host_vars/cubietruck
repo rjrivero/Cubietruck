@@ -1,3 +1,4 @@
 ---
 
 ansible_ssh_host: "{{ lookup('env', 'WLAN0_ADDRESS') }}"
+mopidy_sqlite: true

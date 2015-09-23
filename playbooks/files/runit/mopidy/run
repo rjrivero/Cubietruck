@@ -7,10 +7,5 @@ cd $HOME
 # Activo el virtualenv
 source mopidy/bin/activate
 
-# Si no tengo la libreria cargada, la escaneo
-if [ ! -f "${HOME}/.local/share/mopidy/local/library.json.gz" ]; then
-    chpst -U cubie mopidy/bin/mopidy local scan
-fi
-
 # Ejecuto mopidy
 exec chpst -u cubie:audio mopidy/bin/mopidy 2>&1

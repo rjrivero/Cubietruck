@@ -10,7 +10,7 @@
     lastfm_user:     "{{ lookup('env', 'LASTFM_USER') }}"
     lastfm_password: "{{ lookup('env', 'LASTFM_PASSWORD') }}"
 
-- name: Instalar beets, mopidy
+- name: Instalar beets y dependencias
   become: yes
   become_user: cubie
   pip:
@@ -23,11 +23,38 @@
     - requests
     - pylast
     - flask
+
+- name: Instalar mopidy sin SQLite
+  become: yes
+  become_user: cubie
+  when: not mopidy_sqlite
+  pip:
+    virtualenv: /home/cubie/mopidy
+    virtualenv_site_packages: yes
+    state: present
+    name: "{{ item }}"
+  with_items:
     # Mopidy 1.1.0 y 1.1.1 tienen problemas con algunos tipos de
-    # URLs de tunein; en particular, con las de Rock FM. Si cuando
-    # se ejecute el playbook no se escucha tunein, fijar la version.
-    # - Mopidy==1.0.8
+    # URLs de tunein; en particular, con las de Rock FM. Hasta que
+    # salga la version 1.2, fijamos a 1.0.8
+    - Mopidy==1.0.8
+    - Mopidy-TuneIn
+    - Mopidy-Scrobbler 
+
+- name: Instalar mopidy con SQLite
+  become: yes
+  become_user: cubie
+  when: mopidy_sqlite
+  pip:
+    virtualenv: /home/cubie/mopidy
+    virtualenv_site_packages: yes
+    state: present
+    name: "{{ item }}"
+  with_items:
+    # Mopidy-Local-SQLite requiere Mopidy 1.1 o superior, no va a funcionar
+    # Rock FM hasta que actualicen a Mopidy 1.2.
     - Mopidy
+    - Mopidy-Local-SQLite
     - Mopidy-TuneIn
     - Mopidy-Scrobbler 
 
@@ -83,6 +110,17 @@
     dest:  /home/cubie/.config/mopidy/mopidy.conf
     owner: cubie
     group: cubie
+
+- name: Actualizar la biblioteca periodicamente
+  when: mopidy_sqlite
+  sudo: yes
+  cron:
+    name: Actualizar la biblioteca de Mopidy
+    user: cubie
+    job: cd /home/cubie/mopidy && /home/cubie/mopidy/bin/mopidy local scan
+    hour: 2
+    minute: 32
+    state: present
 
 - name: Tarea de runit para arrancar Mopidy
   copy:
