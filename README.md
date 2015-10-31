@@ -48,6 +48,9 @@ Los playbooks de este proyecto utilizan una serie de variables de entorno:
   - *NOIP_DOMAIN*: Dominio dinámico registrado en noip.org.
   - *NOIP_USERNAME*: Nombre de usuario de noip.
   - *NOIP_PASSWORD*: Clave de noip.
+  - *DD_DOMAIN*: Dominio dinámico registrado en Don Dominio
+  - *DD_USERNAME*: Nombre de usuario de Don Dominio.
+  - *DD_APIKEY*: Clave API para Don Dominio.
   - *LASTFM_USER*: Nombre de usuario de last.fm.
   - *LASTFM_PASSWORD*: Clave de last.fm.
   - *TRANSMISSION_PASSWORD*: Clave de torrent / transmission.

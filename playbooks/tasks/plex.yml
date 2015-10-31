@@ -1,0 +1,52 @@
+---
+
+# ----------------------------------------------------------
+# Instalacion de plex.
+#
+# Nota: tras instalar, lo primero es hacer la configuracion
+# entrando en local, mediante la ruta:
+#
+# http://<ip del servidor>:32400/web
+# ----------------------------------------------------------
+
+- name: Comprobar que existe el volumen de plex
+  lvol:
+    vg: tank
+    lv: plex
+    state: present
+
+- name: Montar el volumen de plex
+  mount:
+    fstype: ext4
+    name: /var/lib/plexmediaserver
+    src: /dev/mapper/tank-plex
+    opts: noatime,nodiratime
+    state: mounted
+
+- name: Instalacion de la clave del repositorio de plex
+  apt_key:
+    url: https://dev2day.de/pms/dev2day-pms.gpg.key
+    state: present
+
+- name: Instalacion del repositorio de plex
+  apt_repository:
+    repo: "deb https://dev2day.de/pms/ {{ansible_distribution_release}} main"
+    state: present
+
+- name: Instalacion de plex tras agregar repo
+  apt:
+    update_cache: yes
+    name: plexmediaserver
+
+- name: Dar los permisos correctos a la ruta de libreria
+  file:
+    dest: /var/lib/plexmediaserver
+    state: directory
+    owner: plex
+    group: cubie
+    recurse: yes
+
+- name: Garantizar que plex se inicia al arranque
+  service:
+    name: plexmediaserver
+    enabled: yes

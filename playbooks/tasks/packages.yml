@@ -36,6 +36,7 @@
     - ddclient
     - lvm2
     - runit
+    - python-apt
 # Para construir dependencias de mopidy, beets y otros
     - python-dev
     - python-pip
@@ -77,6 +78,11 @@
     - libogg-dev
     - libvorbis-dev
     - libflac-dev
+# Para Universal Media Server
+#    - mediainfo
+#    - libzen0
+#    - mplayer
+#    - default-jre-headless
 
 #- name: Copiar mp3gain compilado para armhf
 #  copy:

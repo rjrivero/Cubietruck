@@ -33,10 +33,16 @@
         - bootstrap
         - dnsmasq
 
-    - include: tasks/ddclient.yml
+      # ya no usamos ddclient, sino Don Dominio
+#    - include: tasks/ddclient.yml
+#      tags:
+#        - bootstrap
+#        - ddclient
+
+    - include: tasks/dondominio.yml
       tags:
         - bootstrap
-        - ddclient
+        - dondominio
 
     - include: tasks/storage.yml
       tags:
@@ -72,6 +78,7 @@
       tags:
         - seafile
         - torrent
+        - plex
         - nginx
 
     - include: tasks/seafile.yml
@@ -81,6 +88,10 @@
     - include: tasks/torrent.yml
       tags:
         - torrent
+
+    - include: tasks/plex.yml
+      tags:
+        - plex
 
     - include: tasks/tools.yml
       tags:
