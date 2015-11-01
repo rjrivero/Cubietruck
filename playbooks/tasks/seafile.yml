@@ -9,6 +9,10 @@
 # http://manual.seafile.com/deploy/using_mysql.html
 # -----------------------------------------------
 
+- name: Variables de entorno
+  set_fact:
+    dd_domain: "{{ lookup('env', 'DD_DOMAIN') }}"
+
 - name: Comprobar que el volumen de seafile esta creado
   lvol:
     vg: tank
@@ -32,9 +36,17 @@
     group: www-data
     recurse: yes
 
+- name: Fijar el nombre de servidor
+  lineinfile:
+    dest: /tank/seafile/ccnet/ccnet.conf
+    regexp: ^SERVICE_URL
+    line: SERVICE_URL = https://{{ dd_domain }}:8443
+  notify: Reiniciar seafile
+
 - name: Copiar los scripts de runit
   copy:
     src: files/runit/seafile
     dest: /etc/service
     mode: "0755"
     directory_mode: "0755"
+

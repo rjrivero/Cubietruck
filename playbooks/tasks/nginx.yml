@@ -6,16 +6,28 @@
 
 - name: Variables de entorno
   set_fact:
-    noip_domain: "{{ lookup('env', 'NOIP_DOMAIN') }}"
+    dd_domain: "{{ lookup('env', 'DD_DOMAIN') }}"
 
-- name: Crear certificado SSL
-  command: openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -subj "/C=ES/ST=Madrid/L=Madrid/O=IT/CN={{ noip_domain }}" -keyout cert.key -out cert.crt
-  args:
-    chdir: /etc/nginx 
-    creates: cert.key
+#- name: Crear certificado SSL
+#  command: openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -subj "/C=ES/ST=Madrid/L=Madrid/O=IT/CN={{ dd_domain }}" -keyout cert.key -out cert.crt
+#  args:
+#    chdir: /etc/nginx 
+#    creates: cert.key
+
+- name: Copiar certificado nginx
+  copy:
+    src: files/{{ item }}
+    dest: /etc/nginx/{{ item }}
+    owner: www-data
+    group: www-data
+    mode: 0640
+  with_items:
+    - "cert.key"
+    - "cert.crt"
 
 - name: Cargar fichero de configuracion de nginx
   template:
     src: templates/nginx.conf
     dest: /etc/nginx/sites-available/default
   notify: Reiniciar nginx
+

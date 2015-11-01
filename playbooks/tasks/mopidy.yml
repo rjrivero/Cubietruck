@@ -113,7 +113,6 @@
 
 - name: Actualizar la biblioteca periodicamente
   when: mopidy_sqlite
-  sudo: yes
   cron:
     name: Actualizar la biblioteca de Mopidy
     user: cubie

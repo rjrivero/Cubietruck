@@ -50,4 +50,22 @@ if [ ! -f "$ENVFILE" ]; then
 fi
 source "$ENVFILE"
        
+# Descifrar la clave privada de la cubie
+export KEYFILE="$CWD/playbooks/files/cert.key"
+if [ ! -f "$KEYFILE" ]; then
+    echo "********************************************"
+    echo "DESCIFRANDO CLAVE PRIVADA DE CUBIETRUCK     "
+    echo "********************************************"
+    ansible-vault decrypt --ask-vault-pass --output="$KEYFILE" "$KEYFILE.vault"
+fi
+
+# Descifrar el certificado de la cubie
+export CRTFILE="$CWD/playbooks/files/cert.crt"
+if [ ! -f "$CRTFILE" ]; then
+    echo "********************************************"
+    echo "DESCIFRANDO EL CERTIFICADO DE CUBIETRUCK    "
+    echo "********************************************"
+    ansible-vault decrypt --ask-vault-pass --output="$CRTFILE" "$CRTFILE.vault"
+fi
+
 popd
