@@ -42,3 +42,8 @@
   service:
     name: nginx
     state: restarted
+
+- name: Reiniciar samba
+  service:
+    name: samba
+    state: restarted

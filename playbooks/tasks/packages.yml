@@ -78,6 +78,10 @@
     - libogg-dev
     - libvorbis-dev
     - libflac-dev
+# Para el servidor CIFS
+    - samba
+# Para smbpasswd, los otros paquetes no lo incluyen
+    - samba-common-bin
 # Para Universal Media Server
 #    - mediainfo
 #    - libzen0
@@ -104,6 +108,7 @@
     - mysql
     - nginx
     - transmission-daemon
+    - samba
 #   - minidlna
 #     Para iniciar runit, hay que rebotar o ejecutar "init q"
 #   - runit

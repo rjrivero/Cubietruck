@@ -89,6 +89,10 @@
       tags:
         - torrent
 
+    - include: tasks/samba.yml
+      tags:
+        - samba
+
     - include: tasks/plex.yml
       tags:
         - plex

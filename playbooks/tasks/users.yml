@@ -4,7 +4,6 @@
 # Crea el usuario "cubie" y configura los certificados
 # ------------------------------------------------------
 
-
 - name: Crear grupo generico de servicio
   group:
     name: services

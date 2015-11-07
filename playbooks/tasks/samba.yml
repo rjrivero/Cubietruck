@@ -1,0 +1,22 @@
+---
+
+# ------------------------------------------------------
+# Configura el servidor samba
+# ------------------------------------------------------
+
+- name: Cargar la clave publica del usuario remoto
+  set_fact:
+    samba_password: "{{ lookup('env', 'SAMBA_PASSWORD') }}"
+
+- name: Copiar fichero de configuracion Samba
+  copy:
+    src: files/smb.conf
+    dest: /etc/samba/smb.conf
+    owner: root
+    group: root
+    mode: 0640
+  notify: Reiniciar samba
+
+- name: Actualizar la clave samba del usuario
+  shell: (echo "{{ samba_password }}"; echo "{{ samba_password }}") | \
+         smbpasswd -s -a cubie
