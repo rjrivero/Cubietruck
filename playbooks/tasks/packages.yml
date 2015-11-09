@@ -39,10 +39,10 @@
 #   - ddclient
 #     LXDE "headless", usando el framebuffer
 #     http://superuser.com/questions/524811
-    - lxde
     - xvfb
-    - xvnc
     - lightdm
+    - lxde
+    - x11vnc
 #     Soporte de bluetooth
 #     https://github.com/kdeenkhoorn/cubietruck-scripts/tree/master/bluetooth
     - bluetooth
@@ -118,6 +118,7 @@
 - name: Garantizar que los servicios se inician al arranque
   service:
     name: "{{ item }}"
+    state: started
     enabled: yes
   with_items:
     - iptables-persistent
@@ -128,8 +129,16 @@
     - transmission-daemon
     - samba
     - lightdm
-    - bluetooth
+#   - bluetooth
 #   - ddclient
 #   - minidlna
 #     Para iniciar runit, hay que rebotar o ejecutar "init q"
 #   - runit
+
+# Deshabilitar bluetooth, de momento se oye muy mal (entrecortado) y me
+# captura el altavoz, no me deja que lo conecte a otros equipos.
+- name: Deshabilitar el servicio bluetooth
+  service:
+    name: bluetooth
+    state: stopped
+    enabled: no
