@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# No quiero que el servicio bluetooth se reinicie constantemente.
+# Si el agente falla, es porque hay otro agente operativo; dejamos
+# el servicio detenido.
+
+sleep infinity

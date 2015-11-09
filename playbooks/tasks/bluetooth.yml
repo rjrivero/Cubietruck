@@ -46,13 +46,3 @@
     dest: /etc/service
     mode: "0755"
     directory_mode: "0755"
-
-# De momento, elimino el servicio bluetooth hasta que funcione bien el audio,
-# Ahora mismo va entrecortado
-- name: DESHABILITAR el servicio bluetooth
-  file:
-    dest: /etc/service/bluetooth/run
-    owner: root
-    group: root
-#   Quito el bit de ejecucion, deshabilitando el servicio
-    mode: 0644
