@@ -52,6 +52,8 @@ Los playbooks de este proyecto utilizan una serie de variables de entorno:
   - *LASTFM_PASSWORD*: Clave de last.fm.
   - *TRANSMISSION_PASSWORD*: Clave de torrent / transmission.
   - *SAMBA_PASSWORD*: Clave para usuario SMB/CIFS
+  - *VNC_PASSWORD*: Clave para usuario VNC
+  - *SPEAKER_MAC*: Direccion Bluetooth MAC de los altavoces con los que parear la Cubie.
 
 Variables obsoletas:
 

@@ -1,8 +1,12 @@
 ---
 
 # ----------------------------------------------
-# Configura LXDE con un framebuffer (no la pantalla)
+# Configura VNC sobre LXDE y un servidor framebuffer
 # ----------------------------------------------
+
+- name: Variables de entorno
+  set_fact:
+    vnc_password: "{{ lookup('env', 'VNC_PASSWORD') }}"
 
 - name: Cambia el servidor X por defecto por Xvfb
   lineinfile:
@@ -21,8 +25,8 @@
     mode: 0755
 
 - name: Copia el fichero xserverrc
-  copy:
-    src: files/xserverrc
+  template:
+    src: templates/xserverrc
     dest: /etc/X11/xinit/xserverrc
     owner: root
     group: root

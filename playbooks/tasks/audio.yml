@@ -4,6 +4,10 @@
 # Configura la salida de audio SPDIF
 # ------------------------------------------------------
 
+- name: Variables de entorno
+  set_fact:
+    speaker_mac: "{{ lookup('env', 'SPEAKER_MAC') }}"
+
 - name: Agregar el usuario cubie a los grupos audio, video
   user:
     name: cubie
@@ -11,8 +15,8 @@
     append: yes
 
 - name: Configurar alsa para que use la salida SPDIF
-  copy:
-    src: files/asound.conf
+  template:
+    src: templates/asound.conf
     dest: /etc/asound.conf
     owner: root
     group: root

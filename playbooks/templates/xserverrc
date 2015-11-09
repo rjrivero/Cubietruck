@@ -3,4 +3,4 @@
 /usr/bin/Xvfb :0 -screen 0 1024x768x24 &
 /bin/sleep 5
 /usr/bin/startlxde &
-exec /usr/bin/x11vnc -passwd test -display :0 -many
+exec /usr/bin/x11vnc -passwd "{{ vnc_password }}" -display :0 -many

@@ -25,9 +25,34 @@
 #      BNEP me da errores en dmesg, y no lo necesito, asi que fuera
 #   - "bnep"
 
+- name: Configurar el audio bluetooth
+  lineinfile:
+    state: present
+    dest: /etc/bluetooth/audio.conf
+    insertafter: "^.General"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - line: "Master=true"
+      regexp: "^Master"
+    - line: "Enable=Control,Source,Socket"
+      regexp: "^Enable"
+    - line: "AutoConnect=true"
+      regexp: "^AutoConnect"
+
 - name: Tarea de runit para arrancar bluetooth
   copy:
     src: files/runit/bluetooth
     dest: /etc/service
     mode: "0755"
     directory_mode: "0755"
+
+# De momento, elimino el servicio bluetooth hasta que funcione bien el audio,
+# Ahora mismo va entrecortado
+- name: DESHABILITAR el servicio bluetooth
+  file:
+    dest: /etc/service/bluetooth/run
+    owner: root
+    group: root
+#   Quito el bit de ejecucion, deshabilitando el servicio
+    mode: 0644

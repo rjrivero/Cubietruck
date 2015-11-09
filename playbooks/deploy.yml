@@ -60,10 +60,10 @@
         - audio
         - mopidy
 
-    - include: tasks/lxde.yml
+    - include: tasks/vnc.yml
       tags:
         - bootstrap
-        - lxde
+        - vnc
 
     - include: tasks/bluetooth.yml
       tags:
