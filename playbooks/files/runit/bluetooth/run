@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+
+# Bluetooth MAC Address
+export MAC_ADDR="43:29:B1:55:01:01"
+
+# The PORT value has to be set with the tty port name connected to the
+# brcm40183 chip. For the cubietruck this chip is connected to uart2.
+# If this port can not be found probebly you have to enable the uart2 using
+# setup.bin
+#
+# For example:
+#
+#     [uart_para2]
+#     uart_used = 1
+#     uart_port = 2
+#     uart_type = 4
+#     uart_tx = port:PI18<3><1><default><default>
+#     uart_rx = port:PI19<3><1><default><default>
+#     uart_rts = port:PI16<3><1><default><default>
+#     uart_cts = port:PI17<3><1><default><default>
+#
+# The correct portname can be found by using the command:
+# 
+#     ls /sys/devices/platform/sunxi-uart.2/tty/
+#
+# Usually for Cubian it is ttyS1
+#
+PORT=ttyS1
+
+# Ejecuto la configuración de bluetooth
+if [ ! -z $(/usr/sbin/hciconfig | /bin/grep UART | /usr/bin/cut -d: -f1) ]
+then
+    echo "brcm40183 device allready initialized"
+    /usr/bin/bluetooth-agent 0000
+    exit
+fi
+
+# Select MAC address
+if [ -z "$MAC_ADDR" ]; then
+   echo "No MAC_ADDR set, will use MAC 11:22:33:44:55:66"
+   MAC_OPTIONS="--bd_addr 11:22:33:44:55:66"
+else
+   MAC_OPTIONS="--bd_addr $MAC_ADDR"
+fi
+
+# Select tty port
+if [ -z "$PORT" ]; then
+   echo  "No PORT set, will use ttyS1"
+   PORT="ttyS1"
+fi
+
+# Start patching
+echo -en "" > /dev/$PORT      # pull down RTS on UART
+echo "Start pushing firmware to device and waiting max. 60sec to complete"
+
+# Esta version de  brcm_patchram_plus esta parcheada para que
+# no entre en un bucle infinito cuando se activa hci.
+# Ver https://github.com/kdeenkhoorn/cubietruck-scripts/tree/master/bluetooth
+/usr/bin/timeout 60s /usr/local/bin/brcm_patchram_plus \
+    -d --patchram /lib/firmware/ap6210/bcm20710a1.hcd  \
+    --enable_hci --no2bytes --tosleep 1000             \
+    $MAC_OPTIONS /dev/$PORT 2>&1
+
+case "$?" in
+     0) echo "firmware correctamente parcheado!"
+        # Enable interfaces
+        /usr/sbin/hciattach /dev/$PORT any
+        # Aqui se queda el deminio corriendo
+        /usr/bin/bluetooth-agent 0000
+        ;;
+     *) echo "Timeout, error parcheando firmware"
+        echo "Check /var/log/brcm40183.firmware for messages."
+        ;;
+esac

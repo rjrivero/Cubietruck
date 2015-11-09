@@ -1,0 +1,29 @@
+---
+
+# ----------------------------------------------
+# Configura LXDE con un framebuffer (no la pantalla)
+# ----------------------------------------------
+
+- name: Cambia el servidor X por defecto por Xvfb
+  lineinfile:
+    dest: /etc/lightdm/lightdm.conf
+    state: present
+    regexp: "^xserver-command"
+    line: "xserver-command=/etc/X11/xinit/xserverrc"
+    insertafter: "^.SeatDefaults"
+
+- name: Se asegura de que la ruta a xserverrc existe
+  file:
+    dest: "/etc/X11/xinit"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Copia el fichero xserverrc
+  copy:
+    src: files/xserverrc
+    dest: /etc/X11/xinit/xserverrc
+    owner: root
+    group: root
+    mode: 0755

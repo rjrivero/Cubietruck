@@ -56,8 +56,19 @@
 
     - include: tasks/audio.yml
       tags:
-        - mopidy
+        - bootstrap
         - audio
+        - mopidy
+
+    - include: tasks/lxde.yml
+      tags:
+        - bootstrap
+        - lxde
+
+    - include: tasks/bluetooth.yml
+      tags:
+        - bootstrap
+        - bluetooth
 
       # Para escanear la biblioteca local:
       # supervisorctl restart mopidy_scan
@@ -78,8 +89,8 @@
       tags:
         - seafile
         - torrent
-        - plex
         - nginx
+#        - plex
 
     - include: tasks/seafile.yml
       tags:
@@ -93,9 +104,10 @@
       tags:
         - samba
 
-    - include: tasks/plex.yml
-      tags:
-        - plex
+#     Los clientes buenos de plex son de pago, paso
+#    - include: tasks/plex.yml
+#      tags:
+#        - plex
 
     - include: tasks/tools.yml
       tags:

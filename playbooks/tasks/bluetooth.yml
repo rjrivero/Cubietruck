@@ -1,0 +1,33 @@
+---
+
+# ----------------------------------------------
+# Configura el bluetooth nativo de la cubietruck
+# ----------------------------------------------
+
+- name: Copiar fichero brcm_patchram_plus
+  copy:
+    src:  files/brcm_patchram_plus
+    dest: /usr/local/bin/brcm_patchram_plus
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Insertar modulos al arranque
+  lineinfile:
+    dest: "/etc/modules"
+    regexp: "^{{ item }}"
+    line: "{{ item }}"
+  with_items:
+    - "rfcomm"
+    - "hci_uart"
+    - "bluetooth"
+    - "hidp"
+#      BNEP me da errores en dmesg, y no lo necesito, asi que fuera
+#   - "bnep"
+
+- name: Tarea de runit para arrancar bluetooth
+  copy:
+    src: files/runit/bluetooth
+    dest: /etc/service
+    mode: "0755"
+    directory_mode: "0755"
