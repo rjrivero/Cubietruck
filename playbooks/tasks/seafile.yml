@@ -13,6 +13,19 @@
   set_fact:
     dd_domain: "{{ lookup('env', 'DD_DOMAIN') }}"
 
+# Requerido para soportar seafile con nginx (ver
+# http://manual.seafile.com/deploy/deploy_with_nginx.html
+- name: Instalar python-flup
+  apt:
+    name: python-flup
+    state: installed
+
+- name: Configurar logrotate para los logs de Seafile
+  copy:
+    src: files/seafile.logrotate
+    dest: /etc/logrotate.d/seafile
+    mode: 0644
+
 - name: Comprobar que el volumen de seafile esta creado
   lvol:
     vg: tank
