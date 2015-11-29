@@ -104,6 +104,11 @@
       tags:
         - samba
 
+    - include: tasks/syncthing.yml
+      tags:
+        - syncthing
+        - mopidy
+
 #     Los clientes buenos de plex son de pago, paso
 #    - include: tasks/plex.yml
 #      tags:

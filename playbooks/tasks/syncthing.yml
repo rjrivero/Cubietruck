@@ -1,0 +1,43 @@
+---
+
+# ----------------------------------------------------------
+# Instalacion de syncthing
+# ----------------------------------------------------------
+
+# No funciona con la version de python 2.7 de Wheezy, por temas
+# de la libreria openssl nativa.
+#
+# Para instalar a mano:
+# curl -s https://syncthing.net/release-key.txt | sudo apt-key add -
+#
+#- name: Instalacion de la clave del repositorio de syncthing
+#  apt_key:
+#    url: https://syncthing.net/release-key.txt
+#    state: present
+
+- name: Instalacion del repositorio de syncthing
+  apt_repository:
+    repo: "deb http://apt.syncthing.net/ syncthing release"
+    state: present
+
+- name: Instalacion de syncthing tras agregar repo
+  apt:
+    update_cache: yes
+    name: syncthing
+
+- name: Comprobacion del directorio HOME para syncthing
+  file:
+    path: /tank/musica/syncthing
+    state: directory
+    owner: cubie
+    group: cubie
+    mode: u=rwX,g=rX,o=rX
+    recurse: yes
+
+- name: Copiar los scripts de runit
+  copy:
+    src: files/runit/syncthing
+    dest: /etc/service
+    mode: "0755"
+    directory_mode: "0755"
+

@@ -49,11 +49,18 @@
     group: www-data
     recurse: yes
 
-- name: Fijar el nombre de servidor
+- name: Fijar el nombre de servidor en ccnet.conf
   lineinfile:
     dest: /tank/seafile/ccnet/ccnet.conf
     regexp: ^SERVICE_URL
     line: SERVICE_URL = https://{{ dd_domain }}:8443
+  notify: Reiniciar seafile
+
+- name: Fijar el nombre de servidor en seahub_settings.py
+  lineinfile:
+    dest: /tank/seafile/seahub_settings.py
+    regexp: ^FILE_SERVER_ROOT
+    line: FILE_SERVER_ROOT = "https://{{ dd_domain }}:8443/seafhttp"
   notify: Reiniciar seafile
 
 - name: Copiar los scripts de runit

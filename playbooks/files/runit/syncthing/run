@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+export HOME=/tank/musica/syncthing
+
+cd "${HOME}"
+exec 2>&1
+exec chpst -u cubie /usr/bin/syncthing -home "${HOME}" -no-browser
