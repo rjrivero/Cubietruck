@@ -1,0 +1,46 @@
+---
+
+# ---------------------
+# Madsonic music server
+# ---------------------
+
+- set_fact:
+    madsonic_version: "5.1"
+    madsonic_url: "http://madsonic.org/download/5.1/20150831_madsonic-5.1.5260-standalone.tar.gz"
+
+- name: Create madsonic folder
+  file:
+    dest: "/tank/madsonic-{{ madsonic_version }}"
+    owner: cubie
+    group: cubie
+    state: directory
+
+- name: Download and unarchive subsonic
+  unarchive:
+    creates: "/tank/madsonic-{{ madsonic_version }}/madsonic.sh"
+    dest: "/tank/madsonic-{{ madsonic_version }}"
+    owner: cubie
+    group: cubie
+    copy: no
+    src: "{{ madsonic_url }}"
+
+- name: Remove verbose GC logging
+  lineinfile:
+    dest: /tank/madsonic-{{ madsonic_version }}/madsonic.sh
+    state: absent
+    regexp: "-verbose:gc"
+
+- name: Update symbolyc link
+  file:
+    src:   "/tank/madsonic-{{ madsonic_version }}"
+    dest:  "/tank/madsonic"
+    owner: cubie
+    group: cubie
+    state: link
+
+- name: Tarea de runit para arrancar Madsonic
+  copy:
+    src: files/runit/madsonic
+    dest: /etc/service
+    mode: "0755"
+    directory_mode: "0755"

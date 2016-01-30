@@ -1,0 +1,8 @@
+#!/bin/sh
+
+LOGDIR=/var/log/madsonic
+
+mkdir -p $LOGDIR
+chown cubie:cubie $LOGDIR
+cd    $LOGDIR
+exec  chpst -u cubie svlogd -tt $LOGDIR

@@ -114,6 +114,15 @@
 #      tags:
 #        - plex
 
+    - include: tasks/java.yml
+      tags:
+        - java
+        - madsonic
+
+    - include: tasks/madsonic.yml
+      tags:
+        - madsonic
+
     - include: tasks/tools.yml
       tags:
         - torrent

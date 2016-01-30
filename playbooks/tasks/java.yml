@@ -1,0 +1,13 @@
+---
+
+# -----------------------------------------------
+# Instala la maquina virtual Java por defecto
+# -----------------------------------------------
+
+# JRE 8 not supported by Wheezy
+- name: install Java JRE 7
+  apt:
+    name: openjdk-7-jre-headless
+    update_cache: no
+    install_recommends: no
+    state: present

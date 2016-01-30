@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# Necesario para que madsonic entienda los caracteres con acentos...
+export LC_ALL="en_US.UTF-8"
+export LANG="en_US.UTF-8"
+
+# Ejecuto madsonic
+chpst -u cubie:cubie /tank/madsonic/madsonic.sh \
+     --home=/tank/madsonic \
+     --host=127.0.0.1 --port=4040 \
+     --context-path=/madsonic \
+     --default-music-folder=/tank/musica/libreria  \
+     --default-upload-folder=/tank/musica/incoming \
+     --default-podcast-folder=/tank/musica/podcast \
+     --default-podcast-folder=/tank/musica/podcast \
+     --default-playlist-import-folder=/tank/musica/playlist/import \
+     --default-playlist-export-folder=/tank/musica/playlist/export \
+     --default-playlist-backup-folder=/tank/musica/playlist/backup \
+     --timezone=Europe/Madrid
+
+# Mantengo el log en primer plano
+exec tail --follow=name /tank/madsonic/madsonic_sh.log
