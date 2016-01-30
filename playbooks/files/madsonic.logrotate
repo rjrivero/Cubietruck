@@ -1,0 +1,24 @@
+/tank/madsonic/latest/madsonic_sh.log
+{
+        daily
+        missingok
+        nocreate
+        rotate 4
+        compress
+        delaycompress
+        notifempty
+        copytruncate
+}
+
+/tank/madsonic/latest/madsonic.log
+{
+        daily
+        missingok
+        nocreate
+        rotate 4
+        compress
+        delaycompress
+        notifempty
+        copytruncate
+}
+

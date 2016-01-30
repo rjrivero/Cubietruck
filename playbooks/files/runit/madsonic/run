@@ -5,8 +5,8 @@ export LC_ALL="en_US.UTF-8"
 export LANG="en_US.UTF-8"
 
 # Ejecuto madsonic
-chpst -u cubie:cubie /tank/madsonic/madsonic.sh \
-     --home=/tank/madsonic \
+chpst -u cubie:cubie /tank/madsonic/latest/madsonic.sh \
+     --home=/tank/madsonic/latest \
      --host=127.0.0.1 --port=4040 \
      --context-path=/madsonic \
      --default-music-folder=/tank/musica/libreria  \
@@ -19,4 +19,4 @@ chpst -u cubie:cubie /tank/madsonic/madsonic.sh \
      --timezone=Europe/Madrid
 
 # Mantengo el log en primer plano
-exec tail --follow=name /tank/madsonic/madsonic_sh.log
+exec tail --follow=name /tank/madsonic/latest/madsonic_sh.log

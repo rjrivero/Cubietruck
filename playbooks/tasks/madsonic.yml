@@ -8,17 +8,44 @@
     madsonic_version: "5.1"
     madsonic_url: "http://madsonic.org/download/5.1/20150831_madsonic-5.1.5260-standalone.tar.gz"
 
+- name: Configurar logrotate para los logs de madsonic
+  copy:
+    src: files/madsonic.logrotate
+    dest: /etc/logrotate.d/madsonic
+    mode: 0644
+
+- name: Comprobar que el volumen de madsonic esta creado
+  lvol:
+    vg: tank
+    lv: madsonic
+    state: present
+
+- name: Montar /tank/madsonic
+  mount:
+    fstype: ext4
+    name: /tank/madsonic
+    src: /dev/mapper/tank-madsonic
+    opts: noatime,nodiratime
+    state: mounted
+
+- name: Dar al datastore los permisos correctos
+  file:
+    dest: /tank/madsonic
+    owner: cubie
+    group: cubie
+    recurse: yes
+
 - name: Create madsonic folder
   file:
-    dest: "/tank/madsonic-{{ madsonic_version }}"
+    dest: "/tank/madsonic/{{ madsonic_version }}"
     owner: cubie
     group: cubie
     state: directory
 
-- name: Download and unarchive subsonic
+- name: Download and unarchive madsonic
   unarchive:
-    creates: "/tank/madsonic-{{ madsonic_version }}/madsonic.sh"
-    dest: "/tank/madsonic-{{ madsonic_version }}"
+    creates: "/tank/madsonic/{{ madsonic_version }}/madsonic.sh"
+    dest: "/tank/madsonic/{{ madsonic_version }}"
     owner: cubie
     group: cubie
     copy: no
@@ -26,14 +53,14 @@
 
 - name: Remove verbose GC logging
   lineinfile:
-    dest: /tank/madsonic-{{ madsonic_version }}/madsonic.sh
+    dest: /tank/madsonic/{{ madsonic_version }}/madsonic.sh
     state: absent
     regexp: "-verbose:gc"
 
 - name: Update symbolyc link
   file:
-    src:   "/tank/madsonic-{{ madsonic_version }}"
-    dest:  "/tank/madsonic"
+    src:   "/tank/madsonic/{{ madsonic_version }}"
+    dest:  "/tank/madsonic/latest"
     owner: cubie
     group: cubie
     state: link
