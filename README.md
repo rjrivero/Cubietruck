@@ -87,7 +87,7 @@ ansible-vault decrypt environment.vault environment
 
 El script **init.sh** descifra los ficheros en local al preparar el entorno. Si los ficheros **environment**, **cert.key** y **cert.crt** no existen, init.sh intenta descifrarlos desde las versiones *.vault* correspondientes.
 
-**NOTA**: PAra que el certificado funcione adecuadamente con seafile y nginx, debe contener toda la cadena de certificacion, desde la el certificado raiz. Se puede hacer simplemente concatenando con **cat** los certificados, desde el de site al de root pasando por las intermedias:
+**NOTA**: Para que el certificado funcione adecuadamente con seafile y nginx, debe contener toda la cadena de certificacion, desde la el certificado raiz. Se puede hacer simplemente concatenando con **cat** los certificados, desde el de site al certificado root, pasando por las intermedias:
 
 ```
 cat site.crt intermediate1.crt intermediate2.crt root.crt > cert.crt

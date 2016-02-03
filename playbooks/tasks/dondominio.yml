@@ -10,20 +10,25 @@
     dd_username:   "{{ lookup('env', 'DD_USERNAME') }}"
     dd_apikey:     "{{ lookup('env', 'DD_APIKEY') }}"
 
-- name: Descargar script de renovacion DNS de Don Dominio
-  when: dd_domain and dd_username and dd_apikey
-  unarchive:
-    creates: /home/cubie/dondominio
-    copy: no
-    src: http://labs.dondominio.com/archives/dondominio-dynamic-ip-0.9.1.tar.gz
-    dest: /home/cubie
+- name: Crear carpeta dondominio
+  become: yes
+  file:
+    dest: /tank/dondominio
     owner: cubie
     group: cubie
+    state: directory
+
+- name: Descargar script de renovacion DNS de Don Dominio
+  when: dd_domain and dd_username and dd_apikey
+  git:
+    repo: "https://github.com/dondominio/dondns-bash.git"
+    clone: yes
+    dest: /tank/dondominio
 
 - name: Cambiar permisos de ejecucion para el script de dondominio
   when: dd_domain and dd_username and dd_apikey
   file:
-    path: /home/cubie/dondominio/dondomcli.sh
+    path: /tank/dondominio/dondominio/dondomcli.sh
     state: file
     owner: cubie
     group: cubie
@@ -33,7 +38,7 @@
   when: dd_domain and dd_username and dd_apikey
   template:
     src: templates/dondomcli.conf
-    dest: /home/cubie/dondominio/dondomcli.conf
+    dest: /tank/dondominio/dondominio/dondomcli.conf
     owner: cubie
     group: cubie
     mode: "0640"
@@ -43,6 +48,6 @@
   cron:
     name: Refrescar el nombre de dominio
     user: cubie
-    job: cd /home/cubie/dondominio && ./dondomcli.sh -c dondomcli.conf
+    job: cd /tank/dondominio/dondominio && ./dondomcli.sh -c dondomcli.conf
     minute: 51
     state: present
