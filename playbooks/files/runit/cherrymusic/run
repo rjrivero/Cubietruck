@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+export LANG="en_US.utf8"
+export LC_LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+
+# Ejecuto cherrymusic
+cd /tank/cherrymusic
+exec chpst -u cubie:cubie python cherrymusic --port 8080

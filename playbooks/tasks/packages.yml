@@ -106,6 +106,9 @@
 #    - libzen0
 #    - mplayer
 #    - default-jre-headless
+#
+# Para cherrymusic
+    - python-cherrypy3
 
 #- name: Copiar mp3gain compilado para armhf
 #  copy:

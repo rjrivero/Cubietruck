@@ -1,0 +1,45 @@
+---
+
+# ------------------------------------------------------
+# Configura cherrymusic
+# ------------------------------------------------------
+
+- name: Permisos de la ruta donde descargo la aplicacion
+  file:
+    dest: /tank/cherrymusic
+    state: directory
+    owner: cubie
+    group: cubie
+    recurse: yes
+
+# La base de datos se guarda en:
+# /home/cubie/.local/share/cherrymusic
+
+- name: Permisos de la ruta donde se almacena la config
+  file:
+    dest: /home/cubie/.config/cherrymusic
+    state: directory
+    owner: cubie
+    group: cubie
+    recurse: yes
+
+- name: Descargar cherrymusic desde el codigo fuente
+  git:
+    repo:  https://github.com/devsnd/cherrymusic.git
+    clone: yes
+    dest: /tank/cherrymusic
+
+- name: Configurar cherrymusic
+  copy:
+    src: cherrymusic.conf
+    dest: /home/cubie/.config/cherrymusic/cherrymusic.conf
+    owner: cubie
+    group: cubie
+    mode: 0644
+
+- name: Tarea de runit para arrancar cherrymusic
+  copy:
+    src: files/runit/cherrymusic
+    dest: /etc/service
+    mode: "0755"
+    directory_mode: "0755"

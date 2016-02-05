@@ -114,14 +114,18 @@
 #      tags:
 #        - plex
 
-    - include: tasks/java.yml
-      tags:
-        - java
-        - madsonic
+#    - include: tasks/java.yml
+#      tags:
+#        - java
+#        - madsonic
 
-    - include: tasks/madsonic.yml
+#    - include: tasks/madsonic.yml
+#      tags:
+#        - madsonic
+
+    - include: tasks/cherrymusic.yml
       tags:
-        - madsonic
+        - cherrymusic
 
     - include: tasks/tools.yml
       tags:
