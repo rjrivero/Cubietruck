@@ -45,21 +45,25 @@ Los playbooks de este proyecto utilizan una serie de variables de entorno:
   - *WLAN0_ADDRESS*: Dirección IP a asignar a la interfaz wlan0 de la Cubie.
   - *WLAN0_SSID*: SSID al que conectar la wlan0.
   - *WLAN0_PSK*: PSK WPA2 a usar para la wlan0.
-  - *DD_DOMAIN*: Dominio dinámico registrado en Don Dominio.
-  - *DD_USERNAME*: Nombre de usuario de Don Dominio.
-  - *DD_APIKEY*: Clave API para Don Dominio.
   - *LASTFM_USER*: Nombre de usuario de last.fm.
   - *LASTFM_PASSWORD*: Clave de last.fm.
   - *TRANSMISSION_PASSWORD*: Clave de torrent / transmission.
   - *SAMBA_PASSWORD*: Clave para usuario SMB/CIFS
   - *VNC_PASSWORD*: Clave para usuario VNC
   - *SPEAKER_MAC*: Direccion Bluetooth MAC de los altavoces con los que parear la Cubie.
+  - *CF_DOMAIN*: Nombre del dominio delegado a CloudFlare.
+  - *CF_RECORD*: iRecord A dentro del dominio que apunta a este host.
+  - *CF_USERNAME*: Nombre de usuario (email) de CloudFlare.
+  - *CF_APIKEY*: Clave API para CloudFlare.
 
 Variables obsoletas:
 
   - *NOIP_DOMAIN*: Dominio dinámico registrado en noip.org.
   - *NOIP_USERNAME*: Nombre de usuario de noip.
   - *NOIP_PASSWORD*: Clave de noip.
+  - *DD_DOMAIN*: Dominio dinámico registrado en Don Dominio.
+  - *DD_USERNAME*: Nombre de usuario de Don Dominio.
+  - *DD_APIKEY*: Clave API para Don Dominio.
 
 Para facilitar trabajar con ellas, si existe en el directorio un fichero llamado **environment**, *init.sh* lo invoca para que pueda establecer las variables de entorno.
 

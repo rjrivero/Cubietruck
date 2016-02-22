@@ -1,0 +1,54 @@
+---
+
+# ------------------------------------------------------
+# Configura CloudFlare
+# ------------------------------------------------------
+
+- name: Variables de entorno
+  set_fact:
+    cf_domain:     "{{ lookup('env', 'CF_DOMAIN')   }}"
+    cf_record:     "{{ lookup('env', 'CF_RECORD')   }}"
+    cf_username:   "{{ lookup('env', 'CF_USERNAME') }}"
+    cf_apikey:     "{{ lookup('env', 'CF_APIKEY')   }}"
+
+- name: Crear carpeta cloudflare
+  become: yes
+  file:
+    dest: /tank/cloudflare
+    owner: cubie
+    group: cubie
+    state: directory
+
+- name: Descargar script de renovacion DNS de Cloudflare
+  when: cf_domain and cf_username and cf_apikey and cf_record
+  git:
+    repo: "https://github.com/thatjpk/cloudflare-ddns.git"
+    clone: yes
+    dest: /tank/cloudflare
+
+- name: Cambiar permisos de ejecucion para el script de Cloudflare
+  when: cf_domain and cf_username and cf_apikey and cf_record
+  file:
+    path: /tank/cloudflare/cloudflare_ddns.py
+    state: file
+    owner: cubie
+    group: cubie
+    mode: 0750
+    
+- name: Configuracion de Cloudflare
+  when: cf_domain and cf_username and cf_apikey and cf_record
+  template:
+    src: templates/cloudflare.yaml
+    dest: /tank/cloudflare/config.yaml
+    owner: cubie
+    group: cubie
+    mode: "0640"
+
+- name: Actualizar el dominio cada hora
+  when: cf_domain and cf_username and cf_apikey and cf_record
+  cron:
+    name: Refrescar el nombre de dominio
+    user: cubie
+    job: cd /tank/cloudflare && ./cloudflare_ddns.py config.yaml
+    minute: 51
+    state: present

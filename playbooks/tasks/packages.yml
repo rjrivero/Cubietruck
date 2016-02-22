@@ -36,7 +36,12 @@
     - lvm2
     - runit
     - python-apt
-#   - ddclient
+# Para el cliente DNS de cloudflare
+    - python-pyyaml
+# La version de python-requests de wheezy no funciona con el cliente de
+# CloudFlare, tengo que instalarlo con pip
+#   - python-requests
+#   - ddclient # Cloudflare requiere ddclient >= 3.8.2
 #     LXDE "headless", usando el framebuffer
 #     http://superuser.com/questions/524811
     - xvfb
@@ -117,6 +122,13 @@
 #    owner: root
 #    group: root
 #    mode: "0755"
+
+- name: Instalar paquetes python
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - requests
 
 - name: Garantizar que los servicios se inician al arranque
   service:

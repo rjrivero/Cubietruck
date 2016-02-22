@@ -1,14 +1,5 @@
 ---
 
-# -----------------------------------------------------------
-# Este script requiere varias variables de entorno:
-#
-# - WLAN0_ADDRESS: Direccion IP de la interfaz wlan0
-# - NOIP_DOMAIN:   Dominio dinamico registrado en noip.org.
-# - NOIP_USERNAME: Nombre de usuario de noip.
-# - NOIP_PASSWORD: Clave de noip.
-# -----------------------------------------------------------
-
 - hosts: microserver
 
   tasks:
@@ -33,16 +24,22 @@
         - bootstrap
         - dnsmasq
 
-      # ya no usamos ddclient, sino Don Dominio
+#   Ya no usamos ddclient, sino CloudFlare
 #    - include: tasks/ddclient.yml
 #      tags:
 #        - bootstrap
 #        - ddclient
 
-    - include: tasks/dondominio.yml
+#    Ya no usamos Don Dominio, sino CloudFlare
+#    - include: tasks/dondominio.yml
+#      tags:
+#        - bootstrap
+#        - dondominio
+
+    - include: tasks/cloudflare.yml
       tags:
         - bootstrap
-        - dondominio
+        - cloudflare
 
     - include: tasks/storage.yml
       tags:
