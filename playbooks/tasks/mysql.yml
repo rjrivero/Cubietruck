@@ -14,10 +14,17 @@
     state: present
   notify: Reiniciar mysql
 
-- name: Montar /tank/mysql
+- name: Detener el servicio mysql
+  service:
+    name: mysql
+    state: stopped
+    enabled: no
+
+- name: Montar tank-mysql
   mount:
     fstype: ext4
-    name: /tank/mysql
+#    name: /tank/mysql
+    name: /var/lib/mysql
     src: /dev/mapper/tank-mysql
     opts: noatime,nodiratime
     state: mounted
@@ -31,11 +38,30 @@
     recurse: yes
   notify: Reiniciar mysql
 
-- name: Cambiar el datadir por defecto
-  copy:
-    src: files/mysql-datadir.cnf
-    dest: /etc/mysql/conf.d/mysql-datadir.cnf
-    owner: mysql
-    group: mysql
-  notify: Reiniciar mysql
+- name: Volver a levantar el servicio mysql
+  service:
+    name: mysql
+    state: started
+    enabled: yes
 
+# - name: Cambiar el datadir por defecto
+#  lineinfile:
+#    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+#    regexp: ^datadir
+#    line: datadir = /tank/mysql
+#  notify: Reiniciar mysql
+
+# - name: Cambiar el datadir por defecto
+#  copy:
+#    src: files/mysql-datadir.cnf
+#    dest: /etc/mysql/conf.d/mysql-datadir.cnf
+#    owner: mysql
+#    group: mysql
+#  notify: Reiniciar mysql
+
+#- name: Crear un alias para mysql en apparmor
+#  lineinfile:
+#    dest: /etc/apparmor.d/tunables/alias
+#    regexp: ^alias .var.lib.mysql
+#    line: alias /var/lib/mysql -> /tank/mysql
+#  notify: Reiniciar apparmor

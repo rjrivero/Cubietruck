@@ -36,20 +36,15 @@
 #        - bootstrap
 #        - dondominio
 
-    - include: tasks/cloudflare.yml
+    - include: tasks/users.yml
       tags:
         - bootstrap
-        - cloudflare
+        - users
 
     - include: tasks/storage.yml
       tags:
         - bootstrap
         - storage
-
-    - include: tasks/users.yml
-      tags:
-        - bootstrap
-        - users
 
     - include: tasks/audio.yml
       tags:
@@ -57,15 +52,20 @@
         - audio
         - mopidy
 
+    - include: tasks/cloudflare.yml
+      tags:
+        - bootstrap
+        - cloudflare
+
     - include: tasks/vnc.yml
       tags:
         - bootstrap
         - vnc
 
-    - include: tasks/bluetooth.yml
-      tags:
-        - bootstrap
-        - bluetooth
+#    - include: tasks/bluetooth.yml
+#      tags:
+#        - bootstrap
+#        - bluetooth
 
       # Para escanear la biblioteca local:
       # supervisorctl restart mopidy_scan
@@ -79,7 +79,6 @@
 
     - include: tasks/mysql.yml
       tags:
-        - seafile
         - mysql
 
     - include: tasks/nginx.yml
@@ -104,7 +103,6 @@
     - include: tasks/syncthing.yml
       tags:
         - syncthing
-        - mopidy
 
 #     Los clientes buenos de plex son de pago, paso
 #    - include: tasks/plex.yml

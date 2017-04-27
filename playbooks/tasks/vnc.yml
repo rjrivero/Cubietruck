@@ -8,13 +8,19 @@
   set_fact:
     vnc_password: "{{ lookup('env', 'VNC_PASSWORD') }}"
 
-- name: Cambia el servidor X por defecto por Xvfb
-  lineinfile:
+- name: Actualiza la configuracion de lightdm
+  copy:
+    src: files/lightdm.conf
     dest: /etc/lightdm/lightdm.conf
-    state: present
-    regexp: "^xserver-command"
-    line: "xserver-command=/etc/X11/xinit/xserverrc"
-    insertafter: "^.SeatDefaults"
+    mode: 0644
+
+# - name: Cambia el servidor X por defecto por Xvfb
+#  lineinfile:
+#    dest: /etc/lightdm/lightdm.conf
+#   state: present
+#    regexp: "^xserver-command"
+#    line: "xserver-command=/etc/X11/xinit/xserverrc"
+#    insertafter: "^.SeatDefaults"
 
 - name: Se asegura de que la ruta a xserverrc existe
   file:
@@ -31,3 +37,11 @@
     owner: root
     group: root
     mode: 0755
+
+- name: Activa el servicio lightdm
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - lightdm

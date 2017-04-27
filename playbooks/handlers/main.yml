@@ -47,3 +47,16 @@
   service:
     name: samba
     state: restarted
+
+- name: Reiniciar apparmor
+  service:
+    name: apparmor
+    state: restarted
+
+- name: Reiniciar seafile
+  command: sv restart seafile
+
+- name: Reiniciar transmission
+  service:
+    name: transmission
+    state: restarted

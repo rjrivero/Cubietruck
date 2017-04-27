@@ -13,7 +13,7 @@
     wlan0_psk:     "{{ lookup('env', 'WLAN0_PSK')     }}"
 
 - name: Configuracion de red
-  sudo: yes
+  become: yes
   when: wlan0_address and wlan0_gateway
   template:
     src: templates/interfaces
@@ -33,7 +33,7 @@
     wpa_passphrase: "{{ wpa_stdout.stdout }}"
 
 - name: Configuracion del suplicante wifi
-  sudo: yes
+  become: yes
   when: wlan0_ssid and wlan0_psk
   template:
     src: templates/wpa_supplicant.conf
@@ -43,7 +43,7 @@
     mode: "0640"
 
 - name: Creacion del directorio .ssh de root
-  sudo: yes
+  become: yes
   file:
     dest: "{{ sd_mount }}/root/.ssh"
     state: directory
@@ -61,7 +61,7 @@
     ssh_pubkey: "{{ lookup('file', home + '/.ssh/id_rsa.pub') }}"
 
 - name: Inclusion de la clave publica en el fichero de claves autorizadas
-  sudo: yes
+  become: yes
   lineinfile:
     line: "{{ ssh_pubkey }}"
     dest: "{{ sd_mount }}/root/.ssh/authorized_keys"
@@ -71,14 +71,14 @@
     mode: "0640"
 
 - name: Permitir root login
-  sudo: yes
+  become: yes
   lineinfile:
     dest: "{{ sd_mount }}/etc/ssh/sshd_config"
     regexp: "^PermitRootLogin"
     line: "PermitRootLogin yes"
 
 - name: Pre-configurar DNS
-  sudo: yes
+  become: yes
   lineinfile:
     line: "nameserver {{ item }}"
     dest: "{{ sd_mount }}/etc/resolv.conf"
@@ -91,7 +91,7 @@
     - 8.8.4.4
 
 #- name: Solo permitir acceso con certificado
-#  sudo: yes
+#  become: yes
 #  lineinfile:
 #    dest: "{{ sd_mount }}/etc/ssh/sshd_config"
 #    regexp: "^PasswordAuthentication"
